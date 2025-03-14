@@ -109,7 +109,8 @@ class NN_tb3:
 
     def stop_moving(self):
         twist = Twist()
-        self.pub_twist.publish(twist)
+        # self.pub_twist.publish(twist)
+        self.tmp_pub_twist.publish(twist)
 
     def laser_scan_callback(self, scan):
         self.scan_param = [
@@ -165,7 +166,7 @@ class NN_tb3:
         move_cmd.angular.x = 0.0
         move_cmd.angular.y = 0.0
         move_cmd.angular.z = action[1]
-        self.pub_twist.publish(move_cmd)
+        # self.pub_twist.publish(move_cmd)
         self.tmp_pub_twist.publish(move_cmd)
 
     # def control_pose(self, pose):
