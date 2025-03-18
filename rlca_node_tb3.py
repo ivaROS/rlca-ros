@@ -85,14 +85,14 @@ class NN_tb3:
         self.goal.header = msg.header
 
         # reset subgoals
-        print(
-            "new goal: " + str([self.goal.pose.position.x, self.goal.pose.position.y])
-        )
+        # print(
+        #     "new goal: " + str([self.goal.pose.position.x, self.goal.pose.position.y])
+        # )
 
     def cbSubGoal(self, msg):
         self.sub_goal.x = msg.pose.position.x
         self.sub_goal.y = msg.pose.position.y
-        print("new subgoal: "+str(self.sub_goal))
+        # print("new subgoal: "+str(self.sub_goal))
 
     def cbPose(self, msg):
         self.cbVel(msg)
@@ -205,10 +205,10 @@ class NN_tb3:
         ]  # x, y, theta
         self.goal = np.asarray(self.get_local_goal())
 
-        print("self.goal: ", self.goal)
+        # print("self.goal: ", self.goal)
 
-        print("self.vel: ", self.vel)
-        print("self.vel_angular: ", self.vel_angular)
+        # print("self.vel: ", self.vel)
+        # print("self.vel_angular: ", self.vel_angular)
 
         self.speed = np.asarray([self.vel.x, self.vel_angular], dtype="float64")
 
@@ -220,11 +220,11 @@ class NN_tb3:
             self.env, obs_state_list, self.policy, self.action_bound
         )
 
-        print("scaled_action: ", scaled_action)
+        # print("scaled_action: ", scaled_action)
         action = scaled_action[0]
         # print("float(rospy.get_param('~max_vel_x', 0.3): ", float(rospy.get_param("~max_vel_x", 0.3)))
 
-        print("action: ", action)
+        # print("action: ", action)
 
         action[0] *=  self.max_vel_x # the maximum speed of cmd_vel
         self.control_vel(action)
