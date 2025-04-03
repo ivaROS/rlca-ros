@@ -52,6 +52,7 @@ class NN_tb3:
         self.sub_goal.x = self.sub_goal.y = None
 
         self.max_vel_x = 1.0
+        self.max_angular_vel = 1.0
 
         # for subscribers
         self.pose = PoseStamped()
@@ -60,7 +61,7 @@ class NN_tb3:
         self.psi = 0.0
 
         # publishers
-        self.pub_twist = rospy.Publisher("cmd_vel", Twist, queue_size=1)
+        # self.pub_twist = rospy.Publisher("cmd_vel", Twist, queue_size=1)
         self.tmp_pub_twist = rospy.Publisher("learned_cmd_vel", Twist, queue_size=1)
         self.sub_pose = rospy.Subscriber("odom", Odometry, self.cbPose)
         # Waiting for scan to be published
@@ -90,11 +91,18 @@ class NN_tb3:
         # )
 
     def cbSubGoal(self, msg):
+        # print("cbSubGoal")
+
         self.sub_goal.x = msg.pose.position.x
         self.sub_goal.y = msg.pose.position.y
-        # print("new subgoal: "+str(self.sub_goal))
+        # print("     new subgoal:", self.sub_goal)
 
     def cbPose(self, msg):
+        # print("cbPose")
+
+        # print("     msg.pose.pose.position: ", msg.pose.pose.position)
+        # print("     msg.pose.pose.orientation: ", msg.pose.pose.orientation)
+
         self.cbVel(msg)
         q = msg.pose.pose.orientation
         self.psi = np.arctan2(
@@ -113,6 +121,7 @@ class NN_tb3:
         self.tmp_pub_twist.publish(twist)
 
     def laser_scan_callback(self, scan):
+        # print("laser_scan_callback")
         self.scan_param = [
             scan.angle_min,
             scan.angle_max,
@@ -226,7 +235,8 @@ class NN_tb3:
 
         # print("action: ", action)
 
-        action[0] *=  self.max_vel_x # the maximum speed of cmd_vel
+        action[0] *= self.max_vel_x # the maximum speed of cmd_vel
+        action[1] *= self.max_angular_vel # the maximum angular speed of cmd_vel
         self.control_vel(action)
         # self.update_action(action)
 
