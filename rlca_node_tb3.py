@@ -203,6 +203,7 @@ class NN_tb3:
         while self.scan is None or self.sub_goal.x is None:
             # print(self.scan)
             pass
+
         # ************************************ Input ************************************
         self.get_laser_observation()
         # obs_stack = deque([obs, obs, obs])
@@ -225,18 +226,30 @@ class NN_tb3:
         # self.control_pose(state)
 
         # ************************************ Output ************************************
+
+        action_bound = self.action_bound
+
+        colliding_range = (0.50 / 5.0) - 0.5
+        if ( self.norm_scan[ 255 ]   < colliding_range ): # in front of robot
+            pass
+        else:
+            action_bound = [[0.25, -1.0], [1, 1]]  # the limitation of velocity
+
+
+
+
         _, scaled_action = generate_action_no_sampling(
-            self.env, obs_state_list, self.policy, self.action_bound
+            self.env, obs_state_list, self.policy, action_bound
         )
 
         # print("scaled_action: ", scaled_action)
         action = scaled_action[0]
         # print("float(rospy.get_param('~max_vel_x', 0.3): ", float(rospy.get_param("~max_vel_x", 0.3)))
 
-        # print("action: ", action)
+        print("action: ", action)
 
         action[0] *= self.max_vel_x # the maximum speed of cmd_vel
-        action[1] *= self.max_angular_vel # the maximum angular speed of cmd_vel
+        action[1] *= self.max_angular_vel # adding a slight negative bias, the maximum angular speed of cmd_vel
         self.control_vel(action)
         # self.update_action(action)
 
