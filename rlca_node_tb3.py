@@ -246,7 +246,7 @@ class NN_tb3:
         action = scaled_action[0]
         # print("float(rospy.get_param('~max_vel_x', 0.3): ", float(rospy.get_param("~max_vel_x", 0.3)))
 
-        print("action: ", action)
+        # print("action: ", action)
 
         action[0] *= self.max_vel_x # the maximum speed of cmd_vel
         action[1] *= self.max_angular_vel # adding a slight negative bias, the maximum angular speed of cmd_vel
